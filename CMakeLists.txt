@@ -4,15 +4,12 @@ project (opengl-skeleton)
 
 # The main executable
 add_executable(main
-  src/Application.cpp
-  src/Application.cpp
-  src/MyApplication.cpp
-  src/MyApplication.cpp
-  src/glError.hpp
-  src/glError.cpp
-  src/main.cpp
-  src/Shader.hpp
-  src/Shader.cpp
+   src/Window.hpp
+   src/Window.cpp
+   src/OpenGLApp.hpp
+   src/OpenGLApp.cpp
+   src/main.cpp
+
 )
 set_property(TARGET main PROPERTY CXX_STANDARD 11)
 target_compile_options(main PRIVATE -Wall)
