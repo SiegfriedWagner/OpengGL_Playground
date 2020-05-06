@@ -9,6 +9,6 @@ public:
 protected:
     void loop();
 private:
-    GLuint vao, vbo, shaderProgram;
+    GLuint vao, vbo, ebo, shaderProgram;
 };
 #endif
