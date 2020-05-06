@@ -4,6 +4,8 @@ project (opengl-skeleton)
 
 # The main executable
 add_executable(main
+   src/Utils.hpp
+   src/Utils.cpp
    src/Window.hpp
    src/Window.cpp
    src/OpenGLApp.hpp

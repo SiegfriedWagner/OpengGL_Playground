@@ -6,7 +6,6 @@
 #include <GLFW/glfw3.h>
 
 struct GLFWwindow;
-enum State { ready, running, closing, closed };
 class Window {
 public:
     Window(int, int);
@@ -17,7 +16,6 @@ protected:
 private:
     int width;
     int height;
-    State state;
     std::string windowTitle;
     GLFWwindow* window;
 };

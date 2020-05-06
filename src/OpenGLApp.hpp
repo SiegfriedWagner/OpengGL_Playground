@@ -5,9 +5,10 @@
 class OpenGLApp : public Window {
 public:
     OpenGLApp(int width, int height);
+    bool PrepareBuffers();
 protected:
     void loop();
 private:
-    GLuint vao, vbo[3];
+    GLuint vao, vbo, shaderProgram;
 };
 #endif
