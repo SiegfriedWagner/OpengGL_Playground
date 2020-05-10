@@ -1,53 +1,11 @@
+#include <string>
 #include "OpenGLApp.hpp"
 #include "Utils.hpp"
-
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-	"layout (location = 1) in vec3 aColor;\n"
-	"out vec3 Color;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-	"   Color = aColor;\n"
-    "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-	"out vec4 FragColor;\n"
-	"in vec3 Color;\n"
-	"void main()\n"
-	"{\n"
-    	"FragColor = vec4(Color, 1.0f);\n"
-	"}\0";
 
 OpenGLApp::OpenGLApp(int width, int height) 
     : Window(width, height) { }
 	
 bool OpenGLApp::PrepareBuffers() {
-	// init vertex shader
-	GLuint vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	// create vertex shader
-	glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-	glCompileShader(vertexShader);
-	if(!checkShader(vertexShader))
-		return false;
-	// init fragment shader
-	GLuint fragmentShader;
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-	glCompileShader(fragmentShader);
-	if(!checkShader(fragmentShader))
-		return false;
-	// link all in shader program
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	if(!checkShaderProgram(shaderProgram))
-		return false;
-	// free resources
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-	//init buffers
 	float vertices[] = {
 		//postions          // colors
     	-1.0f, -1.0f, 0.0f,	 1.0f, 0.0f, 0.0f,
@@ -60,11 +18,6 @@ bool OpenGLApp::PrepareBuffers() {
 		0, 1, 3,
 		1, 2, 3
 	};
-/* 	float colorRGBA[] {
-		1.0f, 0.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 0.0f, 1.0f
-	}; */
 	// creating buffers 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);	
@@ -86,17 +39,20 @@ bool OpenGLApp::PrepareBuffers() {
 
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-	// some unexplained binding bellow
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	//glBindVertexArray(0);
 	return true;
+}
+void OpenGLApp::LoadShaderFiles(const std::string &vertexShaderPath, 
+                                const std::string &fragmentShaderPath) {
+	std::string vertexContent = readFile(vertexShaderPath);
+	std::string fragmentContent = readFile(fragmentShaderPath);
+	if(vertexContent == "" || fragmentContent == "")
+		throw std::runtime_error("[Error] Vertex shader or fragment shader is empty");
+	shader = Shader(vertexContent, fragmentContent);
 }
 void OpenGLApp::loop() {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glUseProgram(shaderProgram);
+	glUseProgram((GLuint) shader);
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);

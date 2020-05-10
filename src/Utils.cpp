@@ -1,5 +1,9 @@
 #include "Utils.hpp"
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <sstream>
+
 bool checkShader(GLuint shader) {
     int  success;
     char infoLog[512];
@@ -22,4 +26,12 @@ bool checkShaderProgram(GLuint shaderProgram) {
         std::cout << "[Error] Program linking failed\n"; std::cout << infoLog << std::endl;
     }
     return success;
+}
+
+std::string readFile(const std::string &path) {
+    std::ifstream file;
+    file.open(path);
+     std::string retvalue((std::istreambuf_iterator<char>(file)),
+                       (std::istreambuf_iterator<char>()));
+    return retvalue;
 }

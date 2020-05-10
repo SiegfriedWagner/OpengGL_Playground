@@ -7,15 +7,15 @@ Window::Window(int width, int height)
     if (!glfwInit()) {
         throw std::runtime_error("[Error] Couldn't init GLFW");
     }
-    // GLEW init
     int major = 3, minor = 2;
     // setting attribs
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
-    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // GLFW window
     window = glfwCreateWindow(width, height, windowTitle.c_str(), nullptr, nullptr);
+    // GLEW init
     if (!window) {
         glfwTerminate();
         throw std::runtime_error("[Error] Couldn't create a window");

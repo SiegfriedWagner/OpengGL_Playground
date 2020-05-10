@@ -1,5 +1,5 @@
-#ifndef WINDOW_HPP
-#define WINDOW_HPP
+#ifndef PROJ_WINDOW
+#define PROJ_WINDOW
 #include <string>
 #include <iostream>
 #include <GL/glew.h>
