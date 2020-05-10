@@ -19,4 +19,5 @@ private:
     std::string windowTitle;
     GLFWwindow* window;
 };
+void resizeCallBack(GLFWwindow* window, int width, int height);
 #endif

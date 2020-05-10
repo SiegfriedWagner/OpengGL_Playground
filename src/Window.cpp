@@ -34,6 +34,8 @@ Window::Window(int width, int height)
     if (major<major_min || (major == major_min && minor<minor_min))
 		throw std::runtime_error("OpenGL version is not sufficient");
     glViewport(0, 0, width, height);
+    // callbacks
+    glfwSetFramebufferSizeCallback(window, resizeCallBack);  
 }
 
 void Window::run() {
@@ -50,4 +52,7 @@ void Window::run() {
 
 void Window::loop() {
     std::cout << "[Info] Window::loop" << std::endl;
+}
+void resizeCallBack(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
 }
