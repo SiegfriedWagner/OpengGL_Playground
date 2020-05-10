@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 #include <GL/glew.h>
-
+// TODO: Write assignment operator, copy constructor and move constructor and destructor 
 class Shader {
 public:
     Shader();

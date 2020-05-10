@@ -33,7 +33,7 @@ Shader::Shader(const std::string &vertexShaderSource, const std::string &fragmen
 		throw std::runtime_error("[Error] Linking shader program failed");
 }
 Shader::~Shader() {
-    glDeleteProgram(handle);
+    // glDeleteProgram(handle);
 }
 Shader::operator GLuint() const {
     return handle;
