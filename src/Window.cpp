@@ -42,7 +42,7 @@ void Window::setEnvInfoOnTitleBar() {
     char bufor[256];
     bufor[0] = '\0';
     const GLubyte* wersja = glGetString(GL_VERSION);
-	strcat(bufor, " | OpenGL "); 
+	strcat(bufor, " OpenGL "); 
 	strcat(bufor, (char*)wersja);
 	const GLubyte* dostawca = glGetString(GL_VENDOR);
 	strcat(bufor, " | "); 
@@ -53,6 +53,9 @@ void Window::setEnvInfoOnTitleBar() {
 	const GLubyte* wersjaGLEW = glewGetString(GLEW_VERSION);
 	strcat(bufor, " | GLEW ");
 	strcat(bufor, (char*)wersjaGLEW);
+    const GLubyte* GLSLversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+    strcat(bufor, " | GLSL ");
+    strcat(bufor, (char*)GLSLversion);
     glfwSetWindowTitle(window, bufor);
 }
 void Window::run() {
