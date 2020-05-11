@@ -11,12 +11,13 @@ public:
     Window(int, int);
     void setEnvInfoOnTitleBar();
     void run();
+    int getWidth();
+    int getHeight();
 protected:
     Window(const Window&){};
     virtual void loop(); 
 private:
-    int width;
-    int height;
+    GLint m_viewport[4];
     std::string windowTitle;
     GLFWwindow* window;
 };

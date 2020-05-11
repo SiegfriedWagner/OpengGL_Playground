@@ -2,7 +2,7 @@
 #include "Window.hpp"
 
 Window::Window(int width, int height) 
-    : width(width), height(height), windowTitle("Test title")  {
+    : windowTitle("Test title")  {
     std::cout << "[Info] Window contructor" << std::endl;
     // GLFW init
     if (!glfwInit()) {
@@ -35,6 +35,7 @@ Window::Window(int width, int height)
     if (major<major_min || (major == major_min && minor<minor_min))
 		throw std::runtime_error("OpenGL version is not sufficient");
     glViewport(0, 0, width, height);
+    glGetIntegerv(GL_VIEWPORT, m_viewport);
     // callbacks
     glfwSetFramebufferSizeCallback(window, resizeCallBack);  
 }
@@ -59,8 +60,6 @@ void Window::setEnvInfoOnTitleBar() {
     glfwSetWindowTitle(window, bufor);
 }
 void Window::run() {
-    // Make the window's context current
-    // glfwMakeContextCurrent(window);
     while (!glfwWindowShouldClose(window))
     {
         loop();
@@ -69,7 +68,14 @@ void Window::run() {
     }
     glfwTerminate();
 }
-
+int Window::getWidth() { // TODO: Maybe simplify to single glGetIntegrev call
+    glGetIntegerv(GL_VIEWPORT, m_viewport); 
+    return m_viewport[2];
+}
+int Window::getHeight() {
+    glGetIntegerv(GL_VIEWPORT, m_viewport); 
+    return m_viewport[3];
+}
 void Window::loop() {
     std::cout << "[Info] Window::loop" << std::endl;
 }

@@ -54,6 +54,10 @@ void OpenGLApp::loop() {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram((GLuint) shader);
+	GLint screenWidthParam = glGetUniformLocation((GLuint) shader, "screenWidth");
+	GLint screenHeightParam = glGetUniformLocation((GLuint) shader, "screenHeight");
+	glUniform1f(screenWidthParam, getWidth());
+	glUniform1f(screenHeightParam, getHeight());
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
