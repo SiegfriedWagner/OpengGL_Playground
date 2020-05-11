@@ -1,3 +1,4 @@
+#include <string.h>
 #include "Window.hpp"
 
 Window::Window(int width, int height) 
@@ -37,7 +38,23 @@ Window::Window(int width, int height)
     // callbacks
     glfwSetFramebufferSizeCallback(window, resizeCallBack);  
 }
-
+void Window::setEnvInfoOnTitleBar() {
+    char bufor[256];
+    bufor[0] = '\0';
+    const GLubyte* wersja = glGetString(GL_VERSION);
+	strcat(bufor, " | OpenGL "); 
+	strcat(bufor, (char*)wersja);
+	const GLubyte* dostawca = glGetString(GL_VENDOR);
+	strcat(bufor, " | "); 
+    strcat(bufor, (char*)dostawca);
+	const GLubyte* kartaGraficzna = glGetString(GL_RENDERER);
+	strcat(bufor, " | "); 
+    strcat(bufor, (char*)kartaGraficzna);
+	const GLubyte* wersjaGLEW = glewGetString(GLEW_VERSION);
+	strcat(bufor, " | GLEW ");
+	strcat(bufor, (char*)wersjaGLEW);
+    glfwSetWindowTitle(window, bufor);
+}
 void Window::run() {
     // Make the window's context current
     // glfwMakeContextCurrent(window);

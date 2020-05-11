@@ -9,6 +9,7 @@ struct GLFWwindow;
 class Window {
 public:
     Window(int, int);
+    void setEnvInfoOnTitleBar();
     void run();
 protected:
     Window(const Window&){};
