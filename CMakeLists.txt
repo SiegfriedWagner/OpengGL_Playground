@@ -10,6 +10,8 @@ add_executable(main
    src/Window.cpp
    src/OpenGLApp.hpp
    src/OpenGLApp.cpp
+   src/Shader.hpp
+   src/Shader.cpp
    src/main.cpp
 
 )
