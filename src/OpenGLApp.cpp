@@ -1,6 +1,8 @@
 #include <string>
 #include "OpenGLApp.hpp"
 #include "Utils.hpp"
+#include <ctime>
+#include <math.h>
 
 OpenGLApp::OpenGLApp(int width, int height) 
     : Window(width, height) { }
@@ -51,13 +53,37 @@ void OpenGLApp::LoadShaderFiles(const std::string &vertexShaderPath,
 	shader = Shader(vertexContent, fragmentContent);
 }
 void OpenGLApp::loop() {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram((GLuint) shader);
 	GLint screenWidthParam = glGetUniformLocation((GLuint) shader, "screenWidth");
 	GLint screenHeightParam = glGetUniformLocation((GLuint) shader, "screenHeight");
 	glUniform1f(screenWidthParam, getWidth());
 	glUniform1f(screenHeightParam, getHeight());
+
+	// MVP matrix
+	GLint matrixWorldParam = glGetUniformLocation((GLuint) shader, "matrixWorld"); 
+	float matrixWorld[16] = {
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f};
+	glUniformMatrix4fv(matrixWorldParam, 1, true, matrixWorld);
+	GLint matrixViewParam = glGetUniformLocation((GLuint) shader, "matrixView");
+	float matrixView[16] ={
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, -3.0f,
+		0.0f, 0.0f, 0.0f, 1.0f};
+	glUniformMatrix4fv(matrixViewParam, 1, true, matrixView);
+	GLint matrixProjectionParam = glGetUniformLocation((GLuint) shader, "matrixProjection");
+	float matrixProjection[16] ={
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.41f, 0.0f, 0.0f,
+		0.0f, 0.0f, -1.22f, -2.22f,
+		0.0f, 0.0f, -1.0f, 0.0f};
+	glUniformMatrix4fv(matrixProjectionParam, 1, true, matrixProjection);
+
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
