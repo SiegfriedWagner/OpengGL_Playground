@@ -13,12 +13,14 @@ bool OpenGLApp::PrepareBuffers() {
     	-1.0f, -1.0f, 0.0f,	 1.0f, 0.0f, 0.0f,
      	 1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 1.0f, 
     	 1.0f,  1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 
-		-1.0f, 1.0f, 0.0f,   0.0f, 1.0f, 1.0f, 
+		-1.0f, 1.0f, 0.0f,   0.0f, 1.0f, 1.0f,
+		 0.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.5f,
+		 0.0f,-1.0f, 0.0f,   1.0f, 0.0f, 0.5f
 	};
 
 	GLuint indices[] = {
-		0, 1, 3,
-		1, 2, 3
+		0, 1, 4,
+		2, 3, 5
 	};
 	// creating buffers 
 	glGenVertexArrays(1, &vao);
@@ -70,11 +72,15 @@ void OpenGLApp::loop() {
 		0.0f, 0.0f, 0.0f, 1.0f};
 	glUniformMatrix4fv(matrixWorldParam, 1, true, matrixWorld);
 	GLint matrixViewParam = glGetUniformLocation((GLuint) shader, "matrixView");
-	float matrixView[16] ={
+	/*float matrixView[16] ={
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, -3.0f,
-		0.0f, 0.0f, 0.0f, 1.0f};
+		0.0f, 0.0f, 0.0f, 1.0f};*/
+        float matrixView[16] = {
+			0.71f,  0.00f, 0.71f,  0.00f, 0.41f, 0.82f,
+           -0.41f, 0.00f, -0.58f, 0.58f, 0.58f, -1.73f,
+            0.00f,  0.00f, 0.00f,  1.00f};
 	glUniformMatrix4fv(matrixViewParam, 1, true, matrixView);
 	GLint matrixProjectionParam = glGetUniformLocation((GLuint) shader, "matrixProjection");
 	float matrixProjection[16] ={
@@ -87,6 +93,6 @@ void OpenGLApp::loop() {
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 	// glDrawArrays(GL_TRIANGLES, 0, 3);
 }
