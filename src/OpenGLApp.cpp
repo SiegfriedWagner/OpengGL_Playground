@@ -5,7 +5,7 @@
 #include <math.h>
 
 OpenGLApp::OpenGLApp(int width, int height) 
-    : Window(width, height) { }
+    : Window(width, height), world(Macierz4::Jednostkowa), view(Macierz4::Jednostkowa), projection(Macierz4::Jednostkowa) { }
 	
 bool OpenGLApp::PrepareBuffers() {
 	float vertices[] = {
@@ -46,6 +46,17 @@ bool OpenGLApp::PrepareBuffers() {
 	glEnableVertexAttribArray(1);
 	return true;
 }
+void OpenGLApp::setScene() {
+	GLint matrixWorldParam = glGetUniformLocation((GLuint) shader, "matrixWorld"); 
+	world.setGLMatrixId(matrixWorldParam, true);
+
+	GLint matrixViewParam = glGetUniformLocation((GLuint) shader, "matrixView");
+	view *= Macierz4::Move(0, 0, -3);
+	view.setGLMatrixId(matrixViewParam, true);
+
+	GLint matrixProjectionParam = glGetUniformLocation((GLuint) shader, "matrixProjection");
+	projection.setGLMatrixId(matrixProjectionParam, true);
+}
 void OpenGLApp::LoadShaderFiles(const std::string &vertexShaderPath, 
                                 const std::string &fragmentShaderPath) {
 	std::string vertexContent = readFile(vertexShaderPath);
@@ -64,31 +75,31 @@ void OpenGLApp::loop() {
 	glUniform1f(screenHeightParam, getHeight());
 
 	// MVP matrix
-	GLint matrixWorldParam = glGetUniformLocation((GLuint) shader, "matrixWorld"); 
+	/* GLint matrixWorldParam = glGetUniformLocation((GLuint) shader, "matrixWorld"); 
 	float matrixWorld[16] = {
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f};
-	glUniformMatrix4fv(matrixWorldParam, 1, true, matrixWorld);
-	GLint matrixViewParam = glGetUniformLocation((GLuint) shader, "matrixView");
-	/*float matrixView[16] ={
+	glUniformMatrix4fv(matrixWorldParam, 1, true, matrixWorld); */
+	/* GLint matrixViewParam = glGetUniformLocation((GLuint) shader, "matrixView");
+	float matrixView[16] ={
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, -3.0f,
-		0.0f, 0.0f, 0.0f, 1.0f};*/
-        float matrixView[16] = {
-			0.71f,  0.00f, 0.71f,  0.00f, 0.41f, 0.82f,
-           -0.41f, 0.00f, -0.58f, 0.58f, 0.58f, -1.73f,
-            0.00f,  0.00f, 0.00f,  1.00f};
-	glUniformMatrix4fv(matrixViewParam, 1, true, matrixView);
-	GLint matrixProjectionParam = glGetUniformLocation((GLuint) shader, "matrixProjection");
+		0.0f, 0.0f, 0.0f, 1.0f};
+	float matrixView[16] = {
+		0.71f,  0.00f, 0.71f,  0.00f, 0.41f, 0.82f,
+		-0.41f, 0.00f, -0.58f, 0.58f, 0.58f, -1.73f,
+		0.00f,  0.00f, 0.00f,  1.00f};
+	glUniformMatrix4fv(matrixViewParam, 1, true, matrixView); */
+	/* GLint matrixProjectionParam = glGetUniformLocation((GLuint) shader, "matrixProjection");
 	float matrixProjection[16] ={
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.41f, 0.0f, 0.0f,
 		0.0f, 0.0f, -1.22f, -2.22f,
 		0.0f, 0.0f, -1.0f, 0.0f};
-	glUniformMatrix4fv(matrixProjectionParam, 1, true, matrixProjection);
+	glUniformMatrix4fv(matrixProjectionParam, 1, true, matrixProjection); */
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);

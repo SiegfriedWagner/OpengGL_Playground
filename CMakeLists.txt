@@ -12,6 +12,10 @@ add_executable(main
    src/OpenGLApp.cpp
    src/Shader.hpp
    src/Shader.cpp
+   src/Wektor.hpp
+   src/Matrix.hpp
+   src/MacierzGL.hpp
+   src/MacierzGL.cpp
    src/main.cpp
 
 )
