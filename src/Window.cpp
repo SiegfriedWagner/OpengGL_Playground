@@ -35,9 +35,39 @@ Window::Window(int width, int height)
     if (major<major_min || (major == major_min && minor<minor_min))
 		throw std::runtime_error("OpenGL version is not sufficient");
     glViewport(0, 0, width, height);
-    glGetIntegerv(GL_VIEWPORT, m_viewport);
     // callbacks
-    glfwSetFramebufferSizeCallback(window, resizeCallBack);  
+    glfwSetWindowUserPointer(window, this);
+    auto key_callback = [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+      static_cast<Window*>(glfwGetWindowUserPointer(window))
+          ->keyEventHandler(key, scancode, action, mods);
+    };
+    glfwSetKeyCallback(window, key_callback);
+
+    auto mouse_postion_callback = [](GLFWwindow* window, double xpos, double ypos) {
+      static_cast<Window*>(glfwGetWindowUserPointer(window))
+          ->cursorPostitionCallback(xpos, ypos);
+    };
+    glfwSetCursorPosCallback(window, mouse_postion_callback);
+
+    auto mouse_click_callback = [](GLFWwindow* window, int button, int action,
+                                   int mods) {
+      static_cast<Window*>(glfwGetWindowUserPointer(window))
+          ->mouseButtonEventHandler(button, action, mods);
+    };
+    glfwSetMouseButtonCallback(window, mouse_click_callback);
+
+    auto resize_callback = [](GLFWwindow* window, int width, int height) {
+      static_cast<Window*>(glfwGetWindowUserPointer(window))
+          ->resizeEventHandler(width, height);
+    };
+    glfwSetFramebufferSizeCallback(window, resize_callback);
+
+    auto scroll_callback = [](GLFWwindow* window, double xoffset,
+                              double yoffset) {
+      static_cast<Window*>(glfwGetWindowUserPointer(window))
+          ->mouseScrollEventHandler(xoffset, yoffset);
+    };
+    glfwSetScrollCallback(window, scroll_callback);
 }
 void Window::setEnvInfoOnTitleBar() {
     char bufor[256];
@@ -68,17 +98,29 @@ void Window::run() {
     }
     glfwTerminate();
 }
-int Window::getWidth() { // TODO: Maybe simplify to single glGetIntegrev call
-    glGetIntegerv(GL_VIEWPORT, m_viewport); 
-    return m_viewport[2];
+int Window::getWidth() {
+  return width;
 }
 int Window::getHeight() {
-    glGetIntegerv(GL_VIEWPORT, m_viewport); 
-    return m_viewport[3];
+  return height;
 }
 void Window::loop() {
-    std::cout << "[Info] Window::loop" << std::endl;
+  std::cout << "[Info] Window::loop" << std::endl;
 }
-void resizeCallBack(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
+void Window::keyEventHandler(int key, int scancode, int action, int mods) {
+  std::cout << "Callback keycode[" << key <<"]" << std::endl;
+}
+void Window::resizeEventHandler(int width, int height) {
+  glViewport(0, 0, width, height);
+  this->width = width;
+  this->height = height;
+}
+void Window::mouseButtonEventHandler(int button, int action, int mods) {
+  std::cout << "Mouse clicked: [" << action << "]";
+}
+void Window::cursorPostitionCallback(double xpos, double ypos) {
+  std::cout << "Mouse postion: [" << xpos << "," << ypos << "]" << std::endl;
+}
+void Window::mouseScrollEventHandler(double xoffset, double yoffset) {
+  std::cout << "Mouse scroll: [" << xoffset << "," << yoffset << "]" << std::endl;
 }

@@ -8,7 +8,7 @@ int main(int argc, const char* argv[]) {
   window.setEnvInfoOnTitleBar();
   window.LoadShaderFiles("../shaders/vertex/vertex.glsl", "../shaders/fragment/fragment.glsl");
   window.PrepareBuffers();
-  window.setScene();
+  window.setScene(false);
   window.run();
   return 0;
 }

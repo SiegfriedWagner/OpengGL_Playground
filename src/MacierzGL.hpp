@@ -5,7 +5,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-
+#include <stdexcept>
 #include <exception>
 
 template<typename T>
@@ -70,7 +70,7 @@ public:
 	void setPosition(Wektor3 t)	{
 		setPosition(t[0], t[1], t[2]);
 	}
-	static TMacierzGrafika3D Move(T tx, T ty, T tz)	{
+	static TMacierzGrafika3D Move(const T tx, const T ty,  const T tz)	{
 		TMacierzGrafika3D<T> m;
 		m.setPosition(tx, ty, tz);
 		return m;
@@ -568,7 +568,7 @@ public:
 	static const MacierzOpenGL Zerowa;
 };
 
-typedef MacierzOpenGL Macierz4;
+typedef MacierzOpenGL Matrix4;
 
 /* --------------------------------------------------------------------------------------- */
 

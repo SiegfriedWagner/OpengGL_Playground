@@ -26,7 +26,6 @@ public:
 		assert(indeks >= 0 && indeks < size);
 		return elementy[indeks];
 	}
-
 	TWektor()
 	{
 		Zeruj();

@@ -13,13 +13,17 @@ public:
     void run();
     int getWidth();
     int getHeight();
-protected:
-    Window(const Window&){};
-    virtual void loop(); 
+    virtual void keyEventHandler(int key, int scancode, int action, int mods);
+    virtual void resizeEventHandler(int width, int height);
+    virtual void mouseButtonEventHandler(int button, int action, int mods);
+    virtual void cursorPostitionCallback(double xpos, double ypos);
+    virtual void mouseScrollEventHandler(double xoffset, double yoffset);
+   protected:
+    virtual void loop();
 private:
-    GLint m_viewport[4];
+    int width, height;
     std::string windowTitle;
     GLFWwindow* window;
 };
-void resizeCallBack(GLFWwindow* window, int width, int height);
+
 #endif
