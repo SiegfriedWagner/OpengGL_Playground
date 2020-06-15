@@ -16,6 +16,13 @@ add_executable(main
    src/Matrix.hpp
    src/MacierzGL.hpp
    src/MacierzGL.cpp
+   src/Vertex.hpp
+   src/Actor.hpp
+   src/Actor.cpp
+   src/Square.hpp
+   src/Square.cpp
+   src/Cuboid.hpp
+   src/Cuboid.cpp
    src/main.cpp
 
 )

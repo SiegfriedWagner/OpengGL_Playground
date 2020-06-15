@@ -3,59 +3,50 @@
 #include "Utils.hpp"
 #include <ctime>
 #include <math.h>
+#include "Vertex.hpp"
+#include "Actor.hpp"
+#include "Square.hpp"
+#include "Cuboid.hpp"
 
 OpenGLApp::OpenGLApp(int width, int height) 
     : Window(width, height), controlMode(CamerControlMode::ArcBall), world(Matrix4::Jednostkowa), 
-    ebo(0), vao(0), vbo(0),
-    view(Matrix4::Jednostkowa), projection(Matrix4::Jednostkowa), mousePressedFlag(false) { }
-	
-bool OpenGLApp::PrepareBuffers() {
-	float vertices[] = {
-		//postions          // colors
-    	-0.5f, -0.5f, 0.0f,	 0.5f, 0.0f, 0.0f,
-     	 0.5f, -0.5f, 0.0f,  0.5f, 0.0f, 0.5f, 
-    	 0.5f,  0.5f, 0.0f,  0.0f, 0.5f, 0.0f, 
-		-0.5f, 0.5f, 0.0f,   0.0f, 0.5f, 0.5f,
-		 0.0f, 0.5f, 0.0f,   0.0f, 0.5f, 0.5f,
-		 0.0f,-0.5f, 0.0f,   0.5f, 0.0f, 0.5f
-	};
-
-	GLuint indices[] = {
-		0, 1, 4,
-		2, 3, 5
-	};
-	// creating buffers 
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);	
-	glGenBuffers(1, &ebo);
-	// binding buffers
-	glBindVertexArray(vao);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-		sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 
-		6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 
-		(void*)(3* sizeof(float)));
-	glEnableVertexAttribArray(1);
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	return true;
+    view(Matrix4::Jednostkowa), projection(Matrix4::Jednostkowa), mousePressedFlag(false) { 
+      actorsNum = prepareActors();
+    }
+OpenGLApp::~OpenGLApp() {
+  deleteActors();
+}
+unsigned int OpenGLApp::prepareActors() {
+  GLuint postitionAttrib = 0;
+  GLuint colorAttib = 1;
+  unsigned int actorNumber = 1;
+  actors = new Actor*[actorNumber];
+  // actors[0] = new Square(postitionAttrib, colorAttib, 2.0f);
+  actors[0] = Cuboid::CreateCube(postitionAttrib, colorAttib, 1.5f, true);
+  return actorNumber;
+}
+void OpenGLApp::drawActors() {
+  Matrix4 worldCopy = world;
+  for(unsigned int i = 0; i < actorsNum; ++i) {
+    world.Ustaw(actors[i]->worldMatrix);
+    world.setValues();
+    actors[i]->Draw();
+  }
+  world.Ustaw(worldCopy);
+}
+void OpenGLApp::deleteActors() {
+  for (unsigned int i = 0; i < actorsNum; ++i) {
+    delete actors[i];
+  }
+  delete[] actors;
+  actorsNum = 0;
 }
 void OpenGLApp::setScene(bool izometricProjection=false) {
 	GLint matrixWorldParam = glGetUniformLocation((GLuint) shader, "matrixWorld"); 
 	world.setGLMatrixId(matrixWorldParam, true);
 
 	GLint matrixViewParam = glGetUniformLocation((GLuint) shader, "matrixView");
+  view.UstawJednostkow();
 	view *= Matrix4::Move(0, 0, -3);
 	view.setGLMatrixId(matrixViewParam, true);
 
@@ -70,10 +61,16 @@ void OpenGLApp::setScene(bool izometricProjection=false) {
                                                 wsp * 1.0f, 1.0f, 10.0f);
     }
 	projection.setGLMatrixId(matrixProjectionParam, true);
+    /// DEPTH_TEST - widzenie wnętrza sześcianu lub tła sceny
     glEnable(GL_DEPTH_TEST);
+    //glDisable(GL_DEPTH_TEST);
     glFrontFace(GL_CCW);
-    glPolygonMode(GL_FRONT, GL_FILL);
-    glPolygonMode(GL_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT, GL_FILL);
+    //glPolygonMode(GL_BACK, GL_LINE);
+    /// CULL - wycinanie pierwszoplanowych ścian
+    //glCullFace(GL_BACK);
+    glCullFace(GL_FRONT);
+    glEnable(GL_CULL_FACE);
 }
 void OpenGLApp::LoadShaderFiles(const std::string &vertexShaderPath, 
                                 const std::string &fragmentShaderPath) {
@@ -89,7 +86,7 @@ void OpenGLApp::loop() {
     inertialMovesCalculation(false, 0, 0, 0);
   }
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);   
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+  drawActors();
 }
 void OpenGLApp::resizeEventHandler(int width, int height) {
   Window::resizeEventHandler(width, height);

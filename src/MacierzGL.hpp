@@ -264,9 +264,9 @@ public:
 		T h = t - b;
 		T d = f - n;
 		setScale(2 / w, 2 / h, -2 / d);
-		UstawElement(0, 3, -(r + l) / w);
-		UstawElement(1, 3, -(t + b) / h);
-		UstawElement(2, 3, -(f + n) / d);
+		this->UstawElement(0, 3, -(r + l) / w);
+		this->UstawElement(1, 3, -(t + b) / h);
+		this->UstawElement(2, 3, -(f + n) / d);
 	}
 
 	static TMacierzGrafika3D RzutIzometryczny(T l, T r, T b, T t, T n, T f)

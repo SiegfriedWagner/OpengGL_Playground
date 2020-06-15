@@ -4,6 +4,7 @@
 #include "Window.hpp"
 #include "Shader.hpp"
 #include "MacierzGL.hpp"
+#include "Actor.hpp"
 enum CamerControlMode {
     FPP,
     TPP,
@@ -13,10 +14,10 @@ enum CamerControlMode {
 class OpenGLApp : public Window {
 public:
   OpenGLApp(int width, int height);
-  bool PrepareBuffers();
+  ~OpenGLApp();
   void LoadShaderFiles(const std::string &vertexShaderPath, 
                        const std::string &fragmentShaderPath);
-  void setScene(bool izometricProjection);
+  void setScene(bool isometricProjection);
   void changeCameraPostion(Matrix4 transformMatrix);
   float getCameraDistanceFromCenter() const;
   Wektor3 getCameraPosition(bool ignoreRotation) const;
@@ -26,12 +27,16 @@ public:
   void mouseButtonEventHandler(int button, int action, int mods) override;
   void mouseScrollEventHandler(double xoffset, double yoffset) override;
  protected:
+  Actor** actors;
+  unsigned int actorsNum;
+  virtual unsigned int prepareActors();
+  virtual void drawActors();
+  virtual void deleteActors();
   void loop();
   void changeCameraControlMode();
   void inertialMovesCalculation(bool init, float init_dx, float init_dy, float damping);
  private:
   CamerControlMode controlMode;
-  GLuint vao, vbo, ebo;
   Shader shader;
   Matrix4 world, view, projection;
   bool mousePressedFlag;
