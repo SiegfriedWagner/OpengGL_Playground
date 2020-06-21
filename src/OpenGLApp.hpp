@@ -26,6 +26,7 @@ public:
   void cursorPostitionCallback(double xpos, double ypos) override;
   void mouseButtonEventHandler(int button, int action, int mods) override;
   void mouseScrollEventHandler(double xoffset, double yoffset) override;
+  virtual void animateScene();
  protected:
   Actor** actors;
   unsigned int actorsNum;
@@ -39,6 +40,6 @@ public:
   CamerControlMode controlMode;
   Shader shader;
   Matrix4 world, view, projection;
-  bool mousePressedFlag;
+  bool mousePressedFlag, animationEnabled;
 };
 #endif

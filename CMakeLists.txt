@@ -18,11 +18,17 @@ add_executable(main
    src/MacierzGL.cpp
    src/Vertex.hpp
    src/Actor.hpp
-   src/Actor.cpp
+   src/Actors/Actor.cpp
+   src/Actors/ActorWithIndexBuffer.cpp
    src/Square.hpp
-   src/Square.cpp
+   src/Actors/Square.cpp
+   src/Actors/SquareWithIndexBuffer.cpp
    src/Cuboid.hpp
-   src/Cuboid.cpp
+   src/Actors/Cuboid.cpp
+   src/Quadric.hpp
+   src/Actors/Quadric.cpp
+   src/Sphere.hpp
+   src/Actors/SphereWithIndexBuffer.cpp
    src/main.cpp
 
 )

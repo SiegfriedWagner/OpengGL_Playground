@@ -1,10 +1,10 @@
-#include "Cuboid.hpp"
+#include "../Cuboid.hpp"
 
 Cuboid::Cuboid(GLuint postionAttirb, GLuint colorAttrib, float edgeX, float edgeY, float edgeZ, bool color) 
     : Actor(), edgeX(edgeX), edgeY(edgeY), edgeZ(edgeZ), color(color) {
     Initialize(postionAttirb, colorAttrib);
 }
-unsigned int Cuboid::CreateVertexTable(Vertex*& vertices) {
+unsigned int Cuboid::CreateVertexArray(Vertex*& vertices) {
     const float x0 = edgeX / 2.0f;
     const float y0 = edgeY / 2.0f;
     const float z0 = edgeZ / 2.0f;

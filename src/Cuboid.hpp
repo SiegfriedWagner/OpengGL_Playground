@@ -6,7 +6,7 @@ class Cuboid : public Actor {
 private:
     float edgeX, edgeY, edgeZ;
     bool color;
-    unsigned int CreateVertexTable(Vertex*& vertices);
+    unsigned int CreateVertexArray(Vertex*& vertices);
 
     int firstVertexSubset[6];
     int vertexNumberInSubsets[6];

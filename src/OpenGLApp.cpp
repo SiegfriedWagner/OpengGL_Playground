@@ -7,10 +7,12 @@
 #include "Actor.hpp"
 #include "Square.hpp"
 #include "Cuboid.hpp"
+#include "Quadric.hpp"
+#include "Sphere.hpp"
 
 OpenGLApp::OpenGLApp(int width, int height) 
     : Window(width, height), controlMode(CamerControlMode::ArcBall), world(Matrix4::Jednostkowa), 
-    view(Matrix4::Jednostkowa), projection(Matrix4::Jednostkowa), mousePressedFlag(false) { 
+    view(Matrix4::Jednostkowa), projection(Matrix4::Jednostkowa), mousePressedFlag(false), animationEnabled(false) { 
       actorsNum = prepareActors();
     }
 OpenGLApp::~OpenGLApp() {
@@ -18,11 +20,40 @@ OpenGLApp::~OpenGLApp() {
 }
 unsigned int OpenGLApp::prepareActors() {
   GLuint postitionAttrib = 0;
-  GLuint colorAttib = 1;
-  unsigned int actorNumber = 1;
+  GLuint colorAttrib = 1;
+  unsigned int actorNumber = 5;
   actors = new Actor*[actorNumber];
-  // actors[0] = new Square(postitionAttrib, colorAttib, 2.0f);
-  actors[0] = Cuboid::CreateCube(postitionAttrib, colorAttib, 1.5f, true);
+  /*actors[0] = Quadric::CreateFustrumCone(postitionAttrib, colorAttrib,
+                                            0.3f, 0.1f, 1.0f, 20);
+  actors[0]->worldMatrix = Matrix4::Move(-0.6f, -0.6f, 0);
+  actors[1] =
+      Quadric::CreateCylinder(postitionAttrib, colorAttrib, 0.2f, 1.0f, 20);
+  actors[1]->worldMatrix = Matrix4::Move(0.6f, -0.6f, 0);
+  actors[2] =
+      Quadric::CreateCone(postitionAttrib, colorAttrib, 0.3f, 1.0f, 20);
+  actors[2]->worldMatrix = Matrix4::Move(0.6f, 0.6f, 0);
+  actors[3] =
+      Quadric::CreateDisc(postitionAttrib, colorAttrib, 0.1f, 0.3f, 20);
+  actors[3]->worldMatrix = Matrix4::Move(-0.6f, 0.6f, 0);
+  actors[4] =
+      new SphereWithIndexBuffer(postitionAttrib, colorAttrib, 0.5f, 20, 20);
+      
+  actors[4]->worldMatrix = Matrix4::Move(0.0f, 0.0f, 0.0f);*/
+  //sphere
+  actors[0] =
+      new SphereWithIndexBuffer(postitionAttrib, colorAttrib, 0.5f, 20, 20);
+  actors[0]->worldMatrix = Matrix4::Move(-1.0f, 0, 0);
+  //cylinder
+  actors[1] =
+      Quadric::CreateCylinder(postitionAttrib, colorAttrib, 0.3f, 1.0f, 20);
+  actors[1]->worldMatrix = Matrix4::Move(0, 0.5f, 0) * Matrix4::RotationX(90);
+  actors[2] = Quadric::CreateCircle(postitionAttrib, colorAttrib, 0.3f, 20);
+  actors[2]->worldMatrix = Matrix4::Move(0, 0.5f, 0) * Matrix4::RotationX(-90);
+  actors[3] = Quadric::CreateCircle(postitionAttrib, colorAttrib, 0.3f, 20);
+  actors[3]->worldMatrix = Matrix4::Move(0, -0.5f, 0) * Matrix4::RotationX(90);
+  // cube
+  actors[4] = Cuboid::CreateCube(postitionAttrib, colorAttrib, 0.75f, false);
+  actors[4]->worldMatrix = Matrix4::Move(1.0f, 0, 0);
   return actorNumber;
 }
 void OpenGLApp::drawActors() {
@@ -69,8 +100,8 @@ void OpenGLApp::setScene(bool izometricProjection=false) {
     //glPolygonMode(GL_BACK, GL_LINE);
     /// CULL - wycinanie pierwszoplanowych ścian
     //glCullFace(GL_BACK);
-    glCullFace(GL_FRONT);
-    glEnable(GL_CULL_FACE);
+    //glCullFace(GL_FRONT);
+    //glEnable(GL_CULL_FACE);
 }
 void OpenGLApp::LoadShaderFiles(const std::string &vertexShaderPath, 
                                 const std::string &fragmentShaderPath) {
@@ -84,6 +115,9 @@ void OpenGLApp::LoadShaderFiles(const std::string &vertexShaderPath,
 void OpenGLApp::loop() {
   if (timePassThresholdCall(50)) {
     inertialMovesCalculation(false, 0, 0, 0);
+  }
+  if (animationEnabled && animationTimePassThresholdCall(50)) { // animations
+    animateScene();
   }
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);   
   drawActors();
@@ -132,6 +166,9 @@ void OpenGLApp::keyEventHandler(int key, int scancode, int action, int mods) {
       case GLFW_KEY_F5:
         changeCameraControlMode();
         return;
+      case GLFW_KEY_F6:
+        animationEnabled = !animationEnabled;
+        break;
       default:
         break;
     }
@@ -264,4 +301,7 @@ void OpenGLApp::inertialMovesCalculation(bool init, float init_dx, float init_dy
       inertialMovesEnabled = true;
     changeCameraPostion(Matrix4::RotationXYZ(dy, dx, 0));
   }
+}
+void OpenGLApp::animateScene() {
+  std::cout << "Animating scene" << std::endl;
 }
